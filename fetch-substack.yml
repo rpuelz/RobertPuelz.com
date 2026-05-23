@@ -1,0 +1,136 @@
+name: Fetch Substack Posts
+
+on:
+  schedule:
+    # Runs every 6 hours — picks up new posts within half a day of publishing
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Lets you trigger it manually from GitHub Actions tab
+
+jobs:
+  fetch-posts:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # Needed to commit posts.json back to the repo
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Fetch Substack RSS and write posts.json
+        run: |
+          python3 - <<'EOF'
+          import urllib.request
+          import xml.etree.ElementTree as ET
+          import json
+          import re
+          import html
+          from datetime import datetime, timezone
+
+          RSS_URL  = "https://robertpuelz.substack.com/feed"
+          OUT_FILE = "posts.json"
+          MAX_POSTS = 5
+
+          # ── Fetch feed ───────────────────────────────────────────────────
+          req = urllib.request.Request(
+              RSS_URL,
+              headers={"User-Agent": "robertpuelz.com/feed-fetcher"}
+          )
+          with urllib.request.urlopen(req, timeout=15) as resp:
+              raw = resp.read()
+
+          root = ET.fromstring(raw)
+          ns   = {"content": "http://purl.org/rss/1.0/modules/content/",
+                  "dc":      "http://purl.org/dc/elements/1.1/"}
+
+          # ── Helpers ──────────────────────────────────────────────────────
+          def strip_tags(text):
+              """Remove HTML tags."""
+              return re.sub(r"<[^>]+>", "", text or "")
+
+          def clean(text):
+              """Strip tags, decode HTML entities, collapse whitespace."""
+              return re.sub(r"\s+", " ", html.unescape(strip_tags(text))).strip()
+
+          def truncate(text, max_chars=180):
+              if len(text) <= max_chars:
+                  return text
+              cut = text.rfind(" ", 0, max_chars)
+              return text[:cut] + "\u2026"
+
+          def read_time(text):
+              words = len(text.split())
+              mins  = max(1, round(words / 200))
+              return f"{mins} min read"
+
+          def parse_date(s):
+              """Parse RSS pubDate and return ISO-8601 string."""
+              for fmt in ("%a, %d %b %Y %H:%M:%S %z",
+                          "%a, %d %b %Y %H:%M:%S GMT"):
+                  try:
+                      return datetime.strptime(s, fmt).astimezone(timezone.utc).isoformat()
+                  except ValueError:
+                      pass
+              return s  # Return raw string if parsing fails
+
+          def friendly_date(iso):
+              try:
+                  d = datetime.fromisoformat(iso)
+                  return d.strftime("%b %-d, %Y")
+              except Exception:
+                  return iso
+
+          # ── Parse items ──────────────────────────────────────────────────
+          channel = root.find("channel")
+          items   = channel.findall("item") if channel is not None else root.findall(".//item")
+
+          posts = []
+          for item in items[:MAX_POSTS]:
+              title      = clean(item.findtext("title", ""))
+              link       = (item.findtext("link") or "").strip()
+              pub_raw    = item.findtext("pubDate", "")
+              pub_iso    = parse_date(pub_raw)
+              pub_label  = friendly_date(pub_iso)
+
+              # Content: prefer <content:encoded>, fall back to <description>
+              content_el  = item.find("content:encoded", ns)
+              content_raw = content_el.text if content_el is not None else item.findtext("description", "")
+              content_txt = clean(content_raw)
+
+              excerpt   = truncate(content_txt, 180)
+              rt        = read_time(content_txt)
+
+              # Categories / tags
+              cats = [c.text for c in item.findall("category") if c.text]
+              tag  = cats[0].upper() if cats else "ESSAY"
+
+              posts.append({
+                  "title":   title,
+                  "url":     link,
+                  "tag":     tag,
+                  "excerpt": excerpt,
+                  "readTime": rt,
+                  "date":    pub_label,
+                  "pubIso":  pub_iso,
+              })
+
+          # ── Write output ─────────────────────────────────────────────────
+          with open(OUT_FILE, "w", encoding="utf-8") as f:
+              json.dump({"updated": datetime.now(timezone.utc).isoformat(),
+                         "posts":   posts}, f, ensure_ascii=False, indent=2)
+
+          print(f"Wrote {len(posts)} posts to {OUT_FILE}")
+          EOF
+
+      - name: Commit posts.json if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts.json
+          # Only commit when the file actually changed
+          if git diff --cached --quiet; then
+            echo "No changes to posts.json — skipping commit."
+          else
+            git commit -m "chore: refresh Substack posts [skip ci]"
+            git push
+          fi

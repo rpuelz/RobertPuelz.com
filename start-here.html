@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Here — Robert Puelz</title>
+  <meta name="description" content="How to use RobertPuelz.com — whether you are a household looking for a better financial framework, or an advisor who wants sharper tools for client decisions." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root,
+    [data-theme="light"] {
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Satoshi', Inter, sans-serif;
+
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+
+      --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+      --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-8: 2rem; --sp-10: 2.5rem;
+      --sp-12: 3rem; --sp-16: 4rem; --sp-20: 5rem; --sp-24: 6rem;
+
+      --r-sm: 0.375rem; --r-md: 0.5rem; --r-lg: 0.75rem; --r-xl: 1rem; --r-full: 9999px;
+      --ease: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+
+      --bg: #f8f7f4; --surface: #faf9f7; --surface-2: #fcfcfa; --surface-off: #f2f0eb;
+      --div: #dbd8d1; --border: #d2cfc8; --text: #1a1814; --muted: #6b6862;
+      --faint: #b0aea9; --inverse: #f8f7f4;
+      --primary: #1b3a5c; --primary-h: #142d47; --primary-a: #0d2133;
+      --accent: #c8922a; --accent-h: #a97720; --accent-hi: #f0e3cc;
+      --green: #2e6b3e; --green-bg: #edf5f0;
+
+      --sh-sm: 0 1px 2px oklch(0.15 0.02 240 / 0.06);
+      --sh-md: 0 4px 12px oklch(0.15 0.02 240 / 0.09);
+      --sh-lg: 0 12px 32px oklch(0.15 0.02 240 / 0.14);
+
+      --cw: 960px; --cw-wide: 1200px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f1117; --surface: #141720; --surface-2: #181c26; --surface-off: #1c2030;
+      --div: #2a2f45; --border: #343a52; --text: #e2e4ee; --muted: #8890aa;
+      --faint: #4a5068; --inverse: #0f1117; --primary: #6b9fd4; --primary-h: #4d84c0;
+      --accent: #e8b05a; --accent-h: #d49438; --accent-hi: #3a2e1a;
+      --green: #5aad78; --green-bg: #0e2418;
+      --sh-sm: 0 1px 2px oklch(0 0 0 / 0.25);
+      --sh-md: 0 4px 12px oklch(0 0 0 / 0.35);
+      --sh-lg: 0 12px 32px oklch(0 0 0 / 0.45);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body { font-family: var(--font-body); font-size: var(--text-base); line-height: 1.65; background: var(--bg); color: var(--text); min-height: 100dvh; }
+    h1, h2, h3, h4 { text-wrap: balance; line-height: 1.12; }
+    p, li { text-wrap: pretty; max-width: 68ch; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; cursor: pointer; background: none; border: none; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: color-mix(in oklch, var(--accent) 20%, transparent); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+    .c { max-width: var(--cw); margin-inline: auto; padding-inline: var(--sp-6); }
+    .cw { max-width: var(--cw-wide); margin-inline: auto; padding-inline: var(--sp-6); }
+    a, button { transition: color var(--ease), background var(--ease), border-color var(--ease), opacity var(--ease); }
+
+    /* NAV */
+    .nav { position: sticky; top: 0; z-index: 100; background: color-mix(in oklch, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid color-mix(in oklch, var(--text) 8%, transparent); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding-block: var(--sp-4); }
+    .logo { font-family: var(--font-display); font-size: var(--text-lg); letter-spacing: -0.01em; color: var(--text); }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: var(--sp-8); font-size: var(--text-sm); color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--text); font-weight: 600; }
+    .nav-actions { display: flex; align-items: center; gap: var(--sp-3); }
+    .theme-btn { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; color: var(--muted); }
+    .theme-btn:hover { background: var(--surface-off); color: var(--text); }
+    .btn { display: inline-flex; align-items: center; gap: var(--sp-2); border-radius: var(--r-full); padding: var(--sp-3) var(--sp-6); font-size: var(--text-sm); font-weight: 600; border: none; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: var(--accent-h); }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    /* PAGE HERO */
+    .page-hero { padding: clamp(var(--sp-16), 10vw, var(--sp-24)) 0 clamp(var(--sp-10), 6vw, var(--sp-16)); border-bottom: 1px solid var(--div); }
+    .label { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: var(--sp-4); }
+    .page-hero h1 { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 400; letter-spacing: -0.02em; line-height: 1.08; margin-bottom: var(--sp-5); }
+    .page-hero-sub { font-size: var(--text-base); color: var(--muted); line-height: 1.75; max-width: 58ch; font-weight: 300; }
+
+    /* READER PATHS — jump links */
+    .paths-nav { padding: var(--sp-8) 0; background: var(--surface); border-bottom: 1px solid var(--div); }
+    .paths-nav-inner { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+    @media (max-width: 640px) { .paths-nav-inner { grid-template-columns: 1fr; } }
+    .path-jump { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-5) var(--sp-6); border: 1px solid var(--div); border-radius: var(--r-xl); background: var(--surface-2); text-decoration: none; transition: border-color var(--ease), box-shadow var(--ease); }
+    .path-jump:hover { border-color: var(--accent); box-shadow: var(--sh-sm); }
+    .path-jump-label { font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+    .path-jump-title { font-family: var(--font-display); font-size: var(--text-base); color: var(--text); line-height: 1.3; }
+    .path-jump-desc { font-size: var(--text-xs); color: var(--muted); line-height: 1.55; max-width: none; }
+
+    /* SECTION SHARED */
+    .section { padding: clamp(var(--sp-16), 8vw, var(--sp-24)) 0; border-bottom: 1px solid var(--div); }
+    .section-alt { background: var(--surface); }
+    .section-navy { background: var(--primary); }
+    .section-h { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 400; line-height: 1.1; letter-spacing: -0.015em; margin-bottom: var(--sp-4); }
+    .section-h em { font-style: italic; }
+    .section-b { color: var(--muted); max-width: 60ch; line-height: 1.75; margin-bottom: var(--sp-8); font-size: var(--text-base); }
+    .section-navy .label { color: var(--accent); }
+    .section-navy .section-h { color: #fff; }
+    .section-navy .section-b { color: color-mix(in oklch, #fff 68%, transparent); }
+
+    /* MONEYGIMME SECTION */
+    .mg-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--sp-12); align-items: center; }
+    @media (max-width: 768px) { .mg-grid { grid-template-columns: 1fr; } }
+    .mg-features { display: flex; flex-direction: column; gap: var(--sp-4); margin-bottom: var(--sp-8); }
+    .mg-feature { display: flex; align-items: flex-start; gap: var(--sp-4); padding: var(--sp-5) var(--sp-6); background: var(--surface-2); border: 1px solid color-mix(in oklch, var(--text) 7%, transparent); border-radius: var(--r-lg); }
+    .mg-feature-icon { width: 36px; height: 36px; border-radius: var(--r-md); background: var(--accent-hi); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .mg-feature-icon svg { color: var(--accent); }
+    .mg-feature h4 { font-family: var(--font-display); font-size: var(--text-base); font-weight: 400; margin-bottom: var(--sp-1); color: var(--text); }
+    .mg-feature p { font-size: var(--text-xs); color: var(--muted); max-width: none; line-height: 1.55; }
+    .mg-cta-card { background: var(--primary); border-radius: var(--r-xl); padding: var(--sp-8); color: #fff; }
+    .mg-cta-card .label { color: var(--accent); margin-bottom: var(--sp-3); }
+    .mg-cta-card h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400; color: #fff; line-height: 1.25; margin-bottom: var(--sp-4); }
+    .mg-cta-card p { font-size: var(--text-sm); color: color-mix(in oklch, #fff 68%, transparent); max-width: none; line-height: 1.65; margin-bottom: var(--sp-6); }
+    .mg-btn { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-7); background: var(--accent); color: #fff; border-radius: var(--r-full); font-size: var(--text-sm); font-weight: 700; }
+    .mg-btn:hover { background: var(--accent-h); }
+
+    /* HOUSEHOLD SUBSCRIPTION SECTION */
+    .sub-intro-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--sp-12); align-items: start; margin-bottom: var(--sp-10); }
+    @media (max-width: 768px) { .sub-intro-grid { grid-template-columns: 1fr; } }
+    .sub-card { background: var(--surface-2); border: 1px solid color-mix(in oklch, var(--text) 8%, transparent); border-radius: var(--r-xl); padding: var(--sp-8) var(--sp-10); box-shadow: var(--sh-md); }
+    .sub-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: var(--sp-5); padding-bottom: var(--sp-5); border-bottom: 1px solid var(--div); gap: var(--sp-4); }
+    .sub-card-title { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 400; color: var(--text); line-height: 1.1; }
+    .sub-badge { background: var(--accent-hi); color: var(--accent); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: var(--sp-2) var(--sp-4); border-radius: var(--r-full); white-space: nowrap; flex-shrink: 0; }
+    .sub-includes { display: flex; flex-direction: column; gap: var(--sp-3); margin-bottom: var(--sp-8); }
+    .sub-item { display: flex; align-items: flex-start; gap: var(--sp-3); font-size: var(--text-sm); color: var(--text); line-height: 1.55; }
+    .sub-item::before { content: '✓'; font-weight: 700; color: var(--green); flex-shrink: 0; margin-top: 1px; }
+    .sub-item-note { font-size: var(--text-xs); color: var(--muted); }
+    .sub-cta { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-4) var(--sp-8); background: var(--primary); color: var(--inverse); border-radius: var(--r-full); font-size: var(--text-sm); font-weight: 700; width: 100%; justify-content: center; }
+    .sub-cta:hover { background: var(--primary-h); }
+    .sub-note { font-size: var(--text-xs); color: var(--faint); text-align: center; margin-top: var(--sp-3); max-width: none; }
+    .sub-right { display: flex; flex-direction: column; gap: var(--sp-5); padding-top: var(--sp-2); }
+    .sub-right h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400; color: var(--text); margin-bottom: var(--sp-2); }
+    .sub-right p { font-size: var(--text-sm); color: var(--muted); line-height: 1.7; max-width: 42ch; }
+    .sub-pull { font-family: var(--font-display); font-size: var(--text-lg); font-style: italic; color: var(--primary); line-height: 1.4; padding-left: var(--sp-5); border-left: 3px solid var(--accent); max-width: 36ch; margin-top: var(--sp-4); }
+
+    /* ADVISOR SECTION */
+    .advisor-card { background: var(--surface-2); border: 1px solid color-mix(in oklch, var(--text) 8%, transparent); border-radius: var(--r-xl); padding: var(--sp-10) var(--sp-12); box-shadow: var(--sh-md); display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-12); align-items: center; }
+    @media (max-width: 768px) { .advisor-card { grid-template-columns: 1fr; padding: var(--sp-8); } }
+    .advisor-card h2 { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 400; line-height: 1.15; margin-bottom: var(--sp-5); }
+    .advisor-card > div > p { font-size: var(--text-sm); color: var(--muted); max-width: none; line-height: 1.7; margin-bottom: var(--sp-6); }
+    .advisor-btn { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-4) var(--sp-8); background: var(--accent); color: #fff; border-radius: var(--r-full); font-size: var(--text-sm); font-weight: 700; }
+    .advisor-btn:hover { background: var(--accent-h); }
+    .advisor-note { font-size: var(--text-xs); color: var(--faint); margin-top: var(--sp-3); max-width: none; }
+    .advisor-stats { display: flex; flex-direction: column; gap: var(--sp-4); }
+    .advisor-stat { padding: var(--sp-5) var(--sp-6); background: var(--surface-off); border-radius: var(--r-lg); border: 1px solid color-mix(in oklch, var(--text) 7%, transparent); }
+    .advisor-stat strong { display: block; font-family: var(--font-display); font-size: var(--text-base); color: var(--text); margin-bottom: var(--sp-1); }
+    .advisor-stat p { font-size: var(--text-xs); color: var(--muted); max-width: none; line-height: 1.55; margin: 0; }
+
+    /* FOOTER */
+    .footer { padding: var(--sp-12) 0; border-top: 1px solid var(--div); }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-10); align-items: start; }
+    @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand { font-family: var(--font-display); font-size: var(--text-lg); margin-bottom: var(--sp-3); }
+    .footer-brand span { color: var(--accent); }
+    .footer-tagline { font-size: var(--text-xs); color: var(--muted); max-width: 44ch; }
+    .footer-links { display: flex; flex-direction: column; gap: var(--sp-3); }
+    .footer-links a { font-size: var(--text-xs); color: var(--muted); }
+    .footer-links a:hover { color: var(--text); }
+    .footer-bottom { margin-top: var(--sp-10); padding-top: var(--sp-6); border-top: 1px solid var(--div); }
+    .disclaimer-text { font-size: var(--text-xs); color: var(--faint); line-height: 1.7; max-width: none; }
+    .disclaimer-text a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+    .footer-copy { font-size: var(--text-xs); color: var(--faint); margin-top: var(--sp-4); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="sr-only">Skip to main content</a>
+
+  <header>
+    <nav class="nav" aria-label="Main navigation">
+      <div class="cw">
+        <div class="nav-inner">
+          <a href="index.html" class="logo">Robert <span>Puelz</span></a>
+          <div class="nav-links">
+            <a href="start-here.html" class="active">Start Here</a>
+            <a href="about.html">About</a>
+          </div>
+          <div class="nav-actions">
+            <button class="theme-btn" data-theme-toggle aria-label="Switch to dark mode">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79"></path></svg>
+            </button>
+            <a href="https://robertpuelz.substack.com/" target="_blank" rel="noopener noreferrer" class="btn btn-accent">Join Newsletter</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+      <div class="c">
+        <p class="label">Start Here</p>
+        <h1>Where do you want to start?</h1>
+        <p class="page-hero-sub">This site is built around one idea: that economics gives households a better way to make financial decisions than rules of thumb do. Below you will find three places to put that idea to work — depending on where you are and what you need.</p>
+      </div>
+    </section>
+
+    <!-- JUMP NAV -->
+    <div class="paths-nav">
+      <div class="c">
+        <div class="paths-nav-inner">
+          <a href="#moneygimme" class="path-jump">
+            <span class="path-jump-label">Learn</span>
+            <span class="path-jump-title">Build your financial literacy</span>
+            <span class="path-jump-desc">Guided lessons and decision frameworks on Moneygimme</span>
+          </a>
+          <a href="#households" class="path-jump">
+            <span class="path-jump-label">Work with me</span>
+            <span class="path-jump-title">Household planning subscription</span>
+            <span class="path-jump-desc">Economics-based financial planning for your household, directly</span>
+          </a>
+          <a href="#advisors" class="path-jump">
+            <span class="path-jump-label">For advisors</span>
+            <span class="path-jump-title">Crush client problems with MaxiFi</span>
+            <span class="path-jump-desc">The only planning tool built on life-cycle economics</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONEYGIMME -->
+    <section class="section" id="moneygimme">
+      <div class="c">
+        <div class="mg-grid">
+          <div>
+            <p class="label">Learn</p>
+            <h2 class="section-h">Build your financial literacy with <em>Moneygimme</em></h2>
+            <p class="section-b">Most financial education teaches tips. Moneygimme teaches frameworks — the same economics-based approach I used in the classroom at SMU, built into short lessons and decision tools that work for real households.</p>
+
+            <div class="mg-features">
+              <div class="mg-feature">
+                <div class="mg-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <div>
+                  <h4>Short, practical lessons</h4>
+                  <p>Learn how households should think about spending, saving, retirement, risk, and taxes — without wading through academic papers or generic financial content.</p>
+                </div>
+              </div>
+              <div class="mg-feature">
+                <div class="mg-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                  <h4>Decision frameworks, not advice</h4>
+                  <p>Moneygimme teaches you how to think about the questions — not what to do. Better frameworks produce better decisions, regardless of your specific situation.</p>
+                </div>
+              </div>
+              <div class="mg-feature">
+                <div class="mg-feature-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <div>
+                  <h4>Start with your problem</h4>
+                  <p>You don't have to follow a fixed curriculum. Start with the question that matters most to your household right now — the economics follows from there.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mg-cta-card">
+            <p class="label">Your money. Optimized.</p>
+            <h3>Economics-based financial education for individuals and advisors</h3>
+            <p>Moneygimme is the guided learning platform built from the same framework that drives everything on this site. If you want a structured path through the ideas — rather than a library to browse — start here.</p>
+            <a href="https://moneygimme.com" target="_blank" rel="noopener noreferrer" class="mg-btn">Start on Moneygimme →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOUSEHOLD SUBSCRIPTION -->
+    <section class="section section-alt" id="households">
+      <div class="c">
+        <p class="label">Work with me</p>
+        <h2 class="section-h">Economics-based planning for <em>your</em> household</h2>
+
+        <div class="sub-intro-grid">
+          <div class="sub-card">
+            <div class="sub-card-header">
+              <h3 class="sub-card-title">Household Planning Subscription</h3>
+              <span class="sub-badge">Subscription</span>
+            </div>
+
+            <div class="sub-includes">
+              <div class="sub-item">
+                An initial economics-based assessment of your household's financial picture — income, spending, assets, taxes, Social Security, and longevity</div>
+              <div class="sub-item">
+                Ongoing access to ask questions and work through decisions as they arise — retirement timing, Roth conversions, insurance, estate choices, and more</div>
+              <div class="sub-item">
+                Written frameworks and scenario analysis using life-cycle economics, not rules of thumb</div>
+              <div class="sub-item">
+                Guidance on using MaxiFi Planner to model your household's specific situation and find your sustainable living standard</div>
+              <div class="sub-item">
+                Regular check-ins as your situation changes — a new job, a health event, a market shift, or a decision that needs a fresh look</div>
+            </div>
+
+            <a href="mailto:robert@finplanllc.net" class="sub-cta">Get in touch to learn more →</a>
+            <p class="sub-note">Reach out by email to discuss fit, scope, and pricing.</p>
+          </div>
+
+          <div class="sub-right">
+            <div>
+              <h3>Who this is for</h3>
+              <p>Households who want more than financial entertainment and less than a full-service wealth manager. People who want to understand the economics behind their decisions — not just receive instructions.</p>
+            </div>
+            <blockquote class="sub-pull">The right question is not whether you are saving enough. It is what living standard your household can sustain — and what choices move it higher.</blockquote>
+            <div>
+              <h3>What makes this different</h3>
+              <p>This is not product sales, asset management, or generic advice. It is economics-based analysis applied to your household's specific numbers, situation, and goals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVISOR / MAXIFI -->
+    <section class="section" id="advisors">
+      <div class="c">
+        <p class="label">For financial advisors</p>
+        <div class="advisor-card">
+          <div>
+            <h2>Crush client problems with MaxiFi Planner</h2>
+            <p>Most planning software optimizes portfolios. MaxiFi Planner optimizes households. It models your client's actual income, assets, taxes, Social Security trajectory, and longevity together — and finds the plan that genuinely maximizes their lifetime living standard. It is the only planning tool built on life-cycle economics, and it is the only one I recommend.</p>
+            <p>Use it to answer the questions that matter most to clients: when to retire, when to claim Social Security, how to think about Roth conversions, what longevity risk actually costs, and what living standard is genuinely sustainable. These are household problems. MaxiFi solves them as a system.</p>
+            <a href="https://maxifi.com?fpr=g27d5n" target="_blank" rel="noopener noreferrer" class="advisor-btn">Try MaxiFi Planner →</a>
+            <p class="advisor-note">Affiliate link — I may receive compensation at no cost to you.</p>
+          </div>
+          <div class="advisor-stats">
+            <div class="advisor-stat">
+              <strong>Household-level optimization</strong>
+              <p>Models your client's specific income, assets, taxes, Social Security, and longevity — not population averages.</p>
+            </div>
+            <div class="advisor-stat">
+              <strong>Lifetime living standard</strong>
+              <p>The output is a sustainable spending number the household can build a life around — not a portfolio percentage.</p>
+            </div>
+            <div class="advisor-stat">
+              <strong>Scenario modeling</strong>
+              <p>Compare retirement dates, Social Security strategies, Roth conversions, and life events side by side.</p>
+            </div>
+            <div class="advisor-stat">
+              <strong>Built on life-cycle economics</strong>
+              <p>The only planning tool grounded in the same framework taught in graduate economics and finance courses.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="cw">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">Robert <span>Puelz</span></div>
+          <p class="footer-tagline">Economics-based personal finance for serious household decisions.</p>
+          <p style="font-size: var(--text-xs); color: var(--faint); margin-top: var(--sp-4);">Professor Emeritus, Edwin L. Cox School of Business at SMU<br />Founder, FinPlan LLC</p>
+        </div>
+        <div class="footer-links">
+          <a href="start-here.html">Start Here</a>
+          <a href="about.html">About</a>
+          <a href="https://robertpuelz.substack.com/" target="_blank" rel="noopener noreferrer">Newsletter (Substack)</a>
+          <a href="https://moneygimme.com" target="_blank" rel="noopener noreferrer">Moneygimme</a>
+          <a href="https://maxifi.com?fpr=g27d5n" target="_blank" rel="noopener noreferrer">MaxiFi Planner</a>
+          <a href="mailto:robert@finplanllc.net">Contact</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="disclaimer-text"><strong>Disclaimer:</strong> RobertPuelz.com, Robert Puelz, and FinPlan LLC provide financial education and analysis for informational purposes only. Nothing on this site — including the Household Planning Subscription or any written communication — constitutes financial, investment, tax, or legal advice, and no fiduciary or advisor-client relationship is created by any engagement described here. Content and analysis are general in nature and educational in intent. Every household's situation is different; information provided does not account for your individual circumstances, risk tolerance, tax position, or goals. Always consult a licensed financial advisor, tax professional, or attorney before making financial decisions. Links to <a href="https://maxifi.com?fpr=g27d5n" target="_blank" rel="noopener noreferrer">MaxiFi Planner</a> are affiliate links; FinPlan LLC may receive compensation at no cost to you.</p>
+        <p class="footer-copy">© 2026 FinPlan LLC. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const t = document.querySelector('[data-theme-toggle]');
+      const r = document.documentElement;
+      let d = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', d);
+      if (t) {
+        t.addEventListener('click', function () {
+          d = d === 'dark' ? 'light' : 'dark';
+          r.setAttribute('data-theme', d);
+          t.setAttribute('aria-label', 'Switch to ' + (d === 'dark' ? 'light' : 'dark') + ' mode');
+          t.innerHTML = d === 'dark'
+            ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79"/></svg>';
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
