@@ -142,10 +142,10 @@
 
     /* CREDENTIALS STRIP */
     .creds-strip { padding: var(--sp-10) 0; border-top: 1px solid var(--div); border-bottom: 1px solid var(--div); background: var(--surface); }
-    .creds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-6); }
-    .cred-item { display: flex; flex-direction: column; gap: var(--sp-1); }
+    .creds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); }
+    .cred-item { display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; text-align: center; padding: var(--sp-6) var(--sp-4); }
     .cred-value { font-family: var(--font-display); font-size: var(--text-lg); color: var(--text); }
-    .cred-label { font-size: var(--text-xs); color: var(--muted); line-height: 1.4; max-width: none; }
+    .cred-label { font-size: var(--text-xs); color: var(--muted); line-height: 1.5; max-width: none; }
 
     /* SECTIONS */
     .section { padding: clamp(var(--sp-12), 6vw, var(--sp-20)) 0; }
@@ -161,9 +161,9 @@
     /* PHILOSOPHY CARDS */
     .phil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
     @media (max-width: 640px) { .phil-grid { grid-template-columns: 1fr; } }
-    .phil-card { padding: var(--sp-6) var(--sp-7); background: var(--surface-2); border: 1px solid color-mix(in oklch, var(--text) 8%, transparent); border-radius: var(--r-xl); box-shadow: var(--sh-sm); }
-    .phil-card h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400; margin-bottom: var(--sp-3); }
-    .phil-card p { font-size: var(--text-sm); color: var(--muted); max-width: none; line-height: 1.65; }
+    .phil-card { padding-block: var(--sp-7); padding-inline: var(--sp-12); background: var(--surface-2); border: 1px solid color-mix(in oklch, var(--text) 8%, transparent); border-radius: var(--r-xl); box-shadow: var(--sh-sm); }
+    .phil-card h3 { font-family: var(--font-display); font-size: var(--text-base); font-weight: 400; margin-bottom: var(--sp-3); }
+    .phil-card p { font-size: var(--text-xs); color: var(--muted); max-width: none; line-height: 1.7; }
 
     /* TEACHING AREAS */
     .teaching-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-4); }
@@ -177,7 +177,7 @@
     .newsletter-shell .label { color: var(--accent); margin-bottom: var(--sp-3); }
     .newsletter-shell .section-h { color: #ffffff; margin-bottom: var(--sp-4); font-size: var(--text-xl); }
     .newsletter-shell .section-b { color: color-mix(in oklch, #ffffff 78%, transparent); margin-bottom: var(--sp-6); max-width: 52ch; }
-    .substack-btn { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-4) var(--sp-8); background: var(--accent); color: #fff; border-radius: var(--r-full); font-size: var(--text-sm); font-weight: 700; }
+    .substack-btn { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-6); background: var(--accent); color: #fff; border-radius: var(--r-full); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.02em; }
     .substack-btn:hover { background: var(--accent-h); }
     .nl-note { font-size: var(--text-xs); color: color-mix(in oklch, #ffffff 50%, transparent); margin-top: var(--sp-4); max-width: none; }
     .newsletter-card-right { padding: var(--sp-8); background: color-mix(in oklch, #ffffff 8%, transparent); border: 1px solid color-mix(in oklch, #ffffff 16%, transparent); border-radius: var(--r-xl); }
@@ -207,7 +207,7 @@
     @media (max-width: 640px) { .bridge-card { flex-direction: column; align-items: flex-start; } }
     .bridge-card-text h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 400; margin-bottom: var(--sp-2); }
     .bridge-card-text p { font-size: var(--text-sm); color: var(--muted); max-width: 52ch; line-height: 1.65; }
-    .bridge-btn { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-7); background: transparent; border: 1.5px solid var(--primary); color: var(--primary); border-radius: var(--r-full); font-size: var(--text-sm); font-weight: 600; white-space: nowrap; }
+    .bridge-btn { display: inline-flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-6); background: transparent; border: 1.5px solid var(--primary); color: var(--primary); border-radius: var(--r-full); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; }
     .bridge-btn:hover { background: var(--primary); color: var(--inverse); }
 
     /* FOOTER */
