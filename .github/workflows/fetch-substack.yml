@@ -2,16 +2,15 @@ name: Fetch Substack Posts
 
 on:
   schedule:
-    # Runs every 6 hours — picks up new posts within half a day of publishing
     - cron: '0 */6 * * *'
-  workflow_dispatch:  # Lets you trigger it manually from GitHub Actions tab
+  workflow_dispatch:
 
 jobs:
   fetch-posts:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # Needed to commit posts.json back to the repo
+      contents: write
 
     steps:
       - name: Check out repo
@@ -19,14 +18,17 @@ jobs:
 
       - name: Fetch Substack RSS and write posts.json
         run: |
-          # Use curl with browser headers — more likely to get through than urllib
-          curl -s -L \
+          HTTP_CODE=$(curl -s -L -w "%{http_code}" \
             -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" \
             -H "Accept: application/json" \
             -H "Accept-Language: en-US,en;q=0.9" \
             -H "Referer: https://robertpuelz.substack.com/" \
             "https://robertpuelz.substack.com/api/v1/posts?limit=5&offset=0" \
-            -o raw_posts.json
+            -o raw_posts.json)
+          echo "HTTP status: $HTTP_CODE"
+          echo "First 500 chars of response:"
+          head -c 500 raw_posts.json
+          echo ""
 
           python3 - <<'EOF'
           import json
@@ -37,7 +39,11 @@ jobs:
           OUT_FILE = "posts.json"
 
           with open("raw_posts.json", "r", encoding="utf-8") as f:
-              data = json.load(f)
+              raw = f.read()
+
+          print("Raw response preview:", raw[:200])
+
+          data = json.loads(raw)
 
           def strip_tags(text):
               return re.sub(r"<[^>]+>", "", text or "")
@@ -60,14 +66,14 @@ jobs:
 
           posts = []
           for item in data:
-              title     = clean(item.get("title", ""))
-              slug      = item.get("slug", "")
-              url       = f"https://robertpuelz.substack.com/p/{slug}"
-              pub_iso   = item.get("post_date", "")
-              subtitle  = clean(item.get("subtitle", ""))
-              excerpt   = truncate(subtitle, 180) if subtitle else ""
-              words     = item.get("wordcount", 0) or 0
-              rt        = f"{max(1, round(words / 200))} min read"
+              title    = clean(item.get("title", ""))
+              slug     = item.get("slug", "")
+              url      = f"https://robertpuelz.substack.com/p/{slug}"
+              pub_iso  = item.get("post_date", "")
+              subtitle = clean(item.get("subtitle", ""))
+              excerpt  = truncate(subtitle, 180) if subtitle else ""
+              words    = item.get("wordcount", 0) or 0
+              rt       = f"{max(1, round(words / 200))} min read"
 
               posts.append({
                   "title":    title,
@@ -91,7 +97,6 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add posts.json
-          # Only commit when the file actually changed
           if git diff --cached --quiet; then
             echo "No changes to posts.json — skipping commit."
           else
