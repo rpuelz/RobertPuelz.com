@@ -1,4 +1,32 @@
 {
-  "updated": "2026-05-23T00:00:00+00:00",
-  "posts": []
+  "updated": "2026-06-10T00:00:00+00:00",
+  "posts": [
+    {
+      "title": "Personal Finance the Way It Was Supposed to Be Taught",
+      "url": "https://robertpuelz.substack.com/p/personal-finance-the-way-it-was-supposed",
+      "tag": "ESSAY",
+      "excerpt": "Most people never get a university education in personal finance.",
+      "readTime": "5 min read",
+      "date": "Jun 9, 2026",
+      "pubIso": "2026-06-09T00:00:00+00:00"
+    },
+    {
+      "title": "Three Choices: Pick One.",
+      "url": "https://robertpuelz.substack.com/p/three-choices-pick-one",
+      "tag": "ESSAY",
+      "excerpt": "Affordability can be managed. Here is where to start.",
+      "readTime": "5 min read",
+      "date": "Jun 8, 2026",
+      "pubIso": "2026-06-08T00:00:00+00:00"
+    },
+    {
+      "title": "$7 Gas. $120 for The Tank. A Lot of My Paycheck.",
+      "url": "https://robertpuelz.substack.com/p/7-gas-120-for-the-tank-a-lot-of-my",
+      "tag": "ESSAY",
+      "excerpt": "Inflation is something you hear. Affordability is something you feel. They are not the same thing.",
+      "readTime": "5 min read",
+      "date": "Jun 1, 2026",
+      "pubIso": "2026-06-01T00:00:00+00:00"
+    }
+  ]
 }
