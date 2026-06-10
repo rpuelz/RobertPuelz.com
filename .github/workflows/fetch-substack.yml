@@ -19,29 +19,26 @@ jobs:
 
       - name: Fetch Substack RSS and write posts.json
         run: |
+          # Use curl with browser headers — more likely to get through than urllib
+          curl -s -L \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" \
+            -H "Accept: application/json" \
+            -H "Accept-Language: en-US,en;q=0.9" \
+            -H "Referer: https://robertpuelz.substack.com/" \
+            "https://robertpuelz.substack.com/api/v1/posts?limit=5&offset=0" \
+            -o raw_posts.json
+
           python3 - <<'EOF'
-          import urllib.request
           import json
           import re
           import html
           from datetime import datetime, timezone
 
-          # Substack's public API — not blocked like the RSS feed
-          API_URL  = "https://robertpuelz.substack.com/api/v1/posts?limit=5&offset=0"
           OUT_FILE = "posts.json"
 
-          # ── Fetch ────────────────────────────────────────────────────────
-          req = urllib.request.Request(
-              API_URL,
-              headers={
-                  "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-                  "Accept": "application/json",
-              }
-          )
-          with urllib.request.urlopen(req, timeout=15) as resp:
-              data = json.loads(resp.read())
+          with open("raw_posts.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
 
-          # ── Helpers ──────────────────────────────────────────────────────
           def strip_tags(text):
               return re.sub(r"<[^>]+>", "", text or "")
 
@@ -54,10 +51,6 @@ jobs:
               cut = text.rfind(" ", 0, max_chars)
               return text[:cut] + "\u2026"
 
-          def read_time(word_count):
-              mins = max(1, round(word_count / 200))
-              return f"{mins} min read"
-
           def friendly_date(iso):
               try:
                   d = datetime.fromisoformat(iso.replace("Z", "+00:00"))
@@ -65,18 +58,16 @@ jobs:
               except Exception:
                   return iso[:10]
 
-          # ── Parse posts ──────────────────────────────────────────────────
           posts = []
           for item in data:
-              title      = clean(item.get("title", ""))
-              slug       = item.get("slug", "")
-              url        = f"https://robertpuelz.substack.com/p/{slug}"
-              pub_iso    = item.get("post_date", "")
-              pub_label  = friendly_date(pub_iso)
-              subtitle   = clean(item.get("subtitle", ""))
-              word_count = item.get("wordcount", 0) or 0
-              excerpt    = truncate(subtitle, 180) if subtitle else ""
-              rt         = read_time(word_count)
+              title     = clean(item.get("title", ""))
+              slug      = item.get("slug", "")
+              url       = f"https://robertpuelz.substack.com/p/{slug}"
+              pub_iso   = item.get("post_date", "")
+              subtitle  = clean(item.get("subtitle", ""))
+              excerpt   = truncate(subtitle, 180) if subtitle else ""
+              words     = item.get("wordcount", 0) or 0
+              rt        = f"{max(1, round(words / 200))} min read"
 
               posts.append({
                   "title":    title,
@@ -84,14 +75,13 @@ jobs:
                   "tag":      "ESSAY",
                   "excerpt":  excerpt,
                   "readTime": rt,
-                  "date":     pub_label,
+                  "date":     friendly_date(pub_iso),
                   "pubIso":   pub_iso,
               })
 
-          # ── Write output ─────────────────────────────────────────────────
           with open(OUT_FILE, "w", encoding="utf-8") as f:
               json.dump({"updated": datetime.now(timezone.utc).isoformat(),
-                         "posts":   posts}, f, ensure_ascii=False, indent=2)
+                         "posts": posts}, f, ensure_ascii=False, indent=2)
 
           print(f"Wrote {len(posts)} posts to {OUT_FILE}")
           EOF
