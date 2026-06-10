@@ -238,7 +238,6 @@
       <div class="c">
         <div class="articles-header">
           <h2 class="section-h">Latest writing</h2>
-          <a href="https://robertpuelz.substack.com/" target="_blank" rel="noopener noreferrer" class="see-all">All articles on Substack →</a>
         </div>
         <div class="article-list" id="article-list">
           <!-- Skeletons shown while loading -->
@@ -365,7 +364,7 @@
         })
         .catch(function (err) {
           console.warn('[robertpuelz] posts.json failed:', err);
-          container.innerHTML = '';   // silently clear skeletons; header link handles navigation
+          container.innerHTML = '';
         });
     })();
     // ───────────────────────────────────────────────────────────────────────
