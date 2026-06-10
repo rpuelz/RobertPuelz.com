@@ -34,7 +34,10 @@ jobs:
           # ── Fetch feed ───────────────────────────────────────────────────
           req = urllib.request.Request(
               RSS_URL,
-              headers={"User-Agent": "robertpuelz.com/feed-fetcher"}
+              headers={
+                  "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                  "Accept": "application/rss+xml, application/xml, text/xml, */*",
+              }
           )
           with urllib.request.urlopen(req, timeout=15) as resp:
               raw = resp.read()
