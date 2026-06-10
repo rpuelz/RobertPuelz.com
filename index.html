@@ -342,11 +342,12 @@
 
       fetch('posts.json?v=' + Date.now())        // cache-bust so browsers always get fresh data
         .then(function (res) {
-          if (!res.ok) throw new Error('posts.json not found');
+          if (!res.ok) throw new Error('posts.json HTTP ' + res.status);
           return res.json();
         })
         .then(function (data) {
-          if (!data.posts || data.posts.length === 0) throw new Error('No posts');
+          console.log('[robertpuelz] posts.json loaded:', data);
+          if (!data.posts || data.posts.length === 0) throw new Error('posts array empty');
 
           container.innerHTML = data.posts.map(function (post) {
             return '<a href="' + post.url + '" class="article-item" target="_blank" rel="noopener noreferrer">'
@@ -362,11 +363,9 @@
               + '</a>';
           }).join('');
         })
-        .catch(function () {
-          container.innerHTML = '<p class="articles-error">Could not load articles right now. '
-            + '<a href="https://robertpuelz.substack.com/" target="_blank" rel="noopener noreferrer" '
-            + 'style="color:var(--accent);text-decoration:underline;text-underline-offset:3px;">'
-            + 'Read all articles on Substack →</a></p>';
+        .catch(function (err) {
+          console.warn('[robertpuelz] posts.json failed:', err);
+          container.innerHTML = '';   // silently clear skeletons; header link handles navigation
         });
     })();
     // ───────────────────────────────────────────────────────────────────────
