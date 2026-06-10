@@ -21,38 +21,31 @@ jobs:
         run: |
           python3 - <<'EOF'
           import urllib.request
-          import xml.etree.ElementTree as ET
           import json
           import re
           import html
           from datetime import datetime, timezone
 
-          RSS_URL  = "https://robertpuelz.substack.com/feed"
+          # Substack's public API — not blocked like the RSS feed
+          API_URL  = "https://robertpuelz.substack.com/api/v1/posts?limit=5&offset=0"
           OUT_FILE = "posts.json"
-          MAX_POSTS = 5
 
-          # ── Fetch feed ───────────────────────────────────────────────────
+          # ── Fetch ────────────────────────────────────────────────────────
           req = urllib.request.Request(
-              RSS_URL,
+              API_URL,
               headers={
                   "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-                  "Accept": "application/rss+xml, application/xml, text/xml, */*",
+                  "Accept": "application/json",
               }
           )
           with urllib.request.urlopen(req, timeout=15) as resp:
-              raw = resp.read()
-
-          root = ET.fromstring(raw)
-          ns   = {"content": "http://purl.org/rss/1.0/modules/content/",
-                  "dc":      "http://purl.org/dc/elements/1.1/"}
+              data = json.loads(resp.read())
 
           # ── Helpers ──────────────────────────────────────────────────────
           def strip_tags(text):
-              """Remove HTML tags."""
               return re.sub(r"<[^>]+>", "", text or "")
 
           def clean(text):
-              """Strip tags, decode HTML entities, collapse whitespace."""
               return re.sub(r"\s+", " ", html.unescape(strip_tags(text))).strip()
 
           def truncate(text, max_chars=180):
@@ -61,60 +54,38 @@ jobs:
               cut = text.rfind(" ", 0, max_chars)
               return text[:cut] + "\u2026"
 
-          def read_time(text):
-              words = len(text.split())
-              mins  = max(1, round(words / 200))
+          def read_time(word_count):
+              mins = max(1, round(word_count / 200))
               return f"{mins} min read"
-
-          def parse_date(s):
-              """Parse RSS pubDate and return ISO-8601 string."""
-              for fmt in ("%a, %d %b %Y %H:%M:%S %z",
-                          "%a, %d %b %Y %H:%M:%S GMT"):
-                  try:
-                      return datetime.strptime(s, fmt).astimezone(timezone.utc).isoformat()
-                  except ValueError:
-                      pass
-              return s  # Return raw string if parsing fails
 
           def friendly_date(iso):
               try:
-                  d = datetime.fromisoformat(iso)
+                  d = datetime.fromisoformat(iso.replace("Z", "+00:00"))
                   return d.strftime("%b %-d, %Y")
               except Exception:
-                  return iso
+                  return iso[:10]
 
-          # ── Parse items ──────────────────────────────────────────────────
-          channel = root.find("channel")
-          items   = channel.findall("item") if channel is not None else root.findall(".//item")
-
+          # ── Parse posts ──────────────────────────────────────────────────
           posts = []
-          for item in items[:MAX_POSTS]:
-              title      = clean(item.findtext("title", ""))
-              link       = (item.findtext("link") or "").strip()
-              pub_raw    = item.findtext("pubDate", "")
-              pub_iso    = parse_date(pub_raw)
+          for item in data:
+              title      = clean(item.get("title", ""))
+              slug       = item.get("slug", "")
+              url        = f"https://robertpuelz.substack.com/p/{slug}"
+              pub_iso    = item.get("post_date", "")
               pub_label  = friendly_date(pub_iso)
-
-              # Content: prefer <content:encoded>, fall back to <description>
-              content_el  = item.find("content:encoded", ns)
-              content_raw = content_el.text if content_el is not None else item.findtext("description", "")
-              content_txt = clean(content_raw)
-
-              excerpt   = truncate(content_txt, 180)
-              rt        = read_time(content_txt)
-
-              # Categories / tags
-              cats = [c.text for c in item.findall("category") if c.text]
-              tag  = cats[0].upper() if cats else "ESSAY"
+              subtitle   = clean(item.get("subtitle", ""))
+              word_count = item.get("wordcount", 0) or 0
+              excerpt    = truncate(subtitle, 180) if subtitle else ""
+              rt         = read_time(word_count)
 
               posts.append({
-                  "title":   title,
-                  "url":     link,
-                  "tag":     tag,
-                  "excerpt": excerpt,
+                  "title":    title,
+                  "url":      url,
+                  "tag":      "ESSAY",
+                  "excerpt":  excerpt,
                   "readTime": rt,
-                  "date":    pub_label,
-                  "pubIso":  pub_iso,
+                  "date":     pub_label,
+                  "pubIso":   pub_iso,
               })
 
           # ── Write output ─────────────────────────────────────────────────
