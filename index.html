@@ -280,18 +280,7 @@
         <div class="newsletter-inner">
           <h2 class="section-h">Get updates from Robert Puelz</h2>
           <p class="section-b">New essays, learning paths, and economics-based insights delivered directly to your inbox. No financial entertainment. No hot tips.</p>
-          <form action="https://app.kit.com/forms/9621792/subscriptions" method="post" data-sv-form="9621792" data-uid="6180a80f90" data-format="inline" data-version="5" class="seva-form email-form" id="newsletter-form">
-            <div class="form-row">
-              <label for="ck-name">First name</label>
-              <input id="ck-name" name="fields[first_name]" type="text" placeholder="First name" required />
-            </div>
-            <div class="form-row">
-              <label for="ck-email">Email</label>
-              <input id="ck-email" name="email_address" type="email" placeholder="you@example.com" required />
-            </div>
-            <button type="submit" class="btn btn-accent">Join as a free subscriber →</button>
-            <div class="form-success" id="form-success" aria-live="polite">Success! Check your email to confirm.</div>
-          </form>
+          <a href="https://robertpuelz.substack.com/subscribe" target="_blank" rel="noopener noreferrer" class="btn btn-accent">Join as a free subscriber →</a>
 
         </div>
       </div>
@@ -385,18 +374,6 @@
           t.innerHTML = d === 'dark'
             ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
             : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79"/></svg>';
-        });
-      }
-    })();
-  </script>
-  <script async data-uid="6180a80f90" src="https://robertpuelz-com.kit.com/6180a80f90/index.js"></script>
-  <script>
-    (function () {
-      const form = document.getElementById('newsletter-form');
-      const success = document.getElementById('form-success');
-      if (form && success) {
-        form.addEventListener('submit', function () {
-          success.classList.add('is-visible');
         });
       }
     })();
